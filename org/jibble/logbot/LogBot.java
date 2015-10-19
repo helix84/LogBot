@@ -18,6 +18,8 @@ public class LogBot extends PircBot {
     public static final String NAVY = "irc-navy";
     public static final String BRICK = "irc-brick";
     public static final String RED = "irc-red";
+    public last_date = "0:00";
+    public date_count = 0;
     
     public LogBot(String name, File outDir, String joinMessage) {
         setName(name);
@@ -43,7 +45,17 @@ public class LogBot extends PircBot {
             String time = TIME_FORMAT.format(now);
             File file = new File(outDir, date + ".log");
             BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
-            String entry = "<span class=\"irc-date\">[" + time + "]</span> <span class=\"" + color + "\">" + line + "</span><br />";
+            if (date == last_date) {
+                date_count += 1;
+            } else {
+                date_count = 0;
+            }
+            if (date_count == 0) {
+                String entry = "<span class=\"irc-date\"><a href="" id=" + time + ">[" + time + "]</a></span> <span class=\"" + color + "\">" + line + "</span><br />";
+            } else {
+                String entry = "<span class=\"irc-date\"><a href="" id=" + time + "-" + date_count + ">[" + time + "]</a></span> <span class=\"" + color + "\">" + line + "</span><br />";
+            }
+            last_date = date;
             writer.write(entry);
             writer.newLine();
             writer.flush();
